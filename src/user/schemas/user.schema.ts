@@ -1,5 +1,8 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
-import { HydratedDocument } from "mongoose";
+import mongoose, { HydratedDocument } from "mongoose";
+import { Chat } from "../../chat/schemas/chat.schema";
+import { Relation } from "../../relation/schemas/relation.schema";
+import { GroupUser } from "../../group-users/schemas/group-user.schema";
 
 export type UserDocument = HydratedDocument<User>;
 
@@ -38,13 +41,42 @@ export class User {
   password2nd: string;
 
   @Prop()
-  token:string
+  token: string;
 
-  @Prop({default:false})
-  is_active:boolean
+  @Prop({ default: false })
+  is_active: boolean;
 
   @Prop()
-  activation_link:string
+  activation_link: string;
+
+  @Prop({
+    type: [
+      {
+        type: mongoose.Schema.ObjectId,
+        ref: "Chat",
+      },
+    ],
+  })
+  chats: Chat[];
+
+  @Prop({
+    type: [
+      {
+        type: mongoose.Schema.ObjectId,
+        ref: "Relation",
+      },
+    ],
+  })
+  relation: Relation[];
+  @Prop({
+    type: [
+      {
+        type: mongoose.Schema.ObjectId,
+        ref: "GroupUser",
+      },
+    ],
+  })
+  group_users: GroupUser[];
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
